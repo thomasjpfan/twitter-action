@@ -5,7 +5,6 @@ import (
     "github.com/coreos/pkg/flagutil"
     "github.com/dghubble/go-twitter/twitter"
     "github.com/dghubble/oauth1"
-    "io/ioutil"
     "log"
     "os"
     "strings"
@@ -38,9 +37,8 @@ func main() {
     accessToken := flags.String("access-token", "", "Twitter Access Token")
     accessSecret := flags.String("access-secret", "", "Twitter Access Secret")
     tweetMessage := flags.String("message", "", "Tweet Message")
-    tweetFile := flags.String("file", "", "File Containing Tweet Message Content")
     dryRun := flags.Bool("dry", false,"Test mode, nothing will be sent to twitter")
-    flags.Parse(os.Args[1:]) 
+    flags.Parse(os.Args[1:])
     flagutil.SetFlagsFromEnv(flags, "TWITTER")
 
     // Validating the credentials are available (unless dryRun)
@@ -48,23 +46,7 @@ func main() {
         log.Fatal("Consumer key/secret and Access token/secret required")
     }
 
-    // If the flag file have been given, grab the content of the file after checking if the path exist
-    if !isFlagPassed(*tweetFile) {
-        _, err := os.Stat(*tweetFile)
-        if err != nil {
-            if os.IsNotExist(err) {
-                log.Fatalf("File %s does not exist.", *tweetFile)
-            } else {
-                log.Fatal(err)
-            }
-        }
-    }
-
-    // Reading file content
-    fileContent, err := ioutil.ReadFile(*tweetFile)
-
-    // Assembling the message then the content of the file for the tweet
-    tweetContent := string(join(*tweetMessage, string(fileContent)))
+    tweetContent := *tweetMessage
 
     // Validation a content is available and does not exeed 280 char
     if len(tweetContent) == 0 {
@@ -86,7 +68,7 @@ func main() {
 
         // Twitter client
         client := twitter.NewClient(httpClient)
-        _, _, err = client.Statuses.Update(tweetContent, nil)
+        _, _, err := client.Statuses.Update(tweetContent, nil)
         // Handling Error
         if err != nil {
             log.Fatal(err)
