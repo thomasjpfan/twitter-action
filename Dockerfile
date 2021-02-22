@@ -4,11 +4,10 @@ FROM golang:alpine AS builder
 RUN apk update \
     && apk add --no-cache git ca-certificates
 
-WORKDIR $GOPATH/src/github.com/xorilog/twitter-action/
-COPY ./twitter-action.go ./
+WORKDIR $GOPATH/src/github.com/thomasjpfan/twitter-action/
+COPY ./ ./
 
-RUN go get . \
-    && CGO_ENABLED=0 go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /go/bin/twitter-action *.go
+RUN CGO_ENABLED=0 go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /go/bin/twitter-action *.go
 
 # final stage
 FROM scratch
