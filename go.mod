@@ -1,4 +1,4 @@
-module github.com/thomasjpfan/twitter-action
+module github.com/xorilog/twitter-action
 
 go 1.15
 

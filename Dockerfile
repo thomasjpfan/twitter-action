@@ -4,7 +4,7 @@ FROM golang:alpine AS builder
 RUN apk update \
     && apk add --no-cache git ca-certificates
 
-WORKDIR $GOPATH/src/github.com/thomasjpfan/twitter-action/
+WORKDIR $GOPATH/src/github.com/xorilog/twitter-action/
 COPY ./ ./
 
 RUN CGO_ENABLED=0 go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /go/bin/twitter-action *.go
